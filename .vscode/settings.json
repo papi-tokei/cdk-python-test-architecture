@@ -1,0 +1,12 @@
+{
+    "python.autoComplete.extraPaths": [
+        "resources/get_data",
+        "resources/post_data",
+        "layer_builder/table_model/python"
+    ], 
+    "python.analysis.extraPaths": [
+        "resources/get_data",
+        "resources/post_data",
+        "layer_builder/table_model/python"
+    ], 
+}
