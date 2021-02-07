@@ -3,8 +3,18 @@ from boto3.dynamodb.conditions import Key
 import requests
 from get_data_type import Student
 from user_table import print_ok, UserTable
+from aws_lambda_powertools import Tracer, Logger
 
 DYNAMODB = boto3.resource('dynamodb')
+tracer = Tracer(service="booking")
+logger = Logger(
+    service="payment",
+    level="INFO",
+    sampling_rate=None,
+    xray_trace_id=None,
+    timestamp=None,
+    location=None,
+)
 
 
 def get_table_data(table_name):
@@ -12,6 +22,7 @@ def get_table_data(table_name):
     return table.scan()
 
 
+@tracer.capture_lambda_handler
 def handler(event, _):
     print(event)
     # data2 = get_table_data('sample_table2')
@@ -20,6 +31,8 @@ def handler(event, _):
     data1 = UserTable.scan_user_data()
     UserTable.create_user('Jam', 24)
     print(data1)
+    logger.info(data1)
+    logger.info({'test': 123})
     print_ok()
 
-    return ''
+    return 'Return value'

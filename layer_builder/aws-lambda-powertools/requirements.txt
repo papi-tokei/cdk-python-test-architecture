@@ -1,0 +1,6 @@
+aws-xray-sdk==2.6.0
+aws-lambda-powertools==1.8.0
+boto3==1.16.13
+botocore==1.19.13
+fastjsonschema==2.14.5
+jmespath==0.10.0
