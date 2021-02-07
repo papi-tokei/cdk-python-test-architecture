@@ -11,3 +11,4 @@ cdk.out
 .parcel-cache
 __pycache__
 layer_builder/requests/python
+layer_builder/aws-lambda-powertools/python
