@@ -4,9 +4,12 @@ import requests
 from get_data_type import Student
 from user_table import print_ok, UserTable
 from aws_lambda_powertools import Tracer, Logger
+import os
 
 DYNAMODB = boto3.resource('dynamodb')
-tracer = Tracer(service="booking")
+if os.getenv('AWS_REGION'):
+    # if: 実際にLambda上で動作している場合のみ適用する
+    tracer = Tracer(service="booking")
 logger = Logger(
     service="payment",
     level="INFO",
@@ -22,7 +25,7 @@ def get_table_data(table_name):
     return table.scan()
 
 
-@tracer.capture_lambda_handler
+# @tracer.capture_lambda_handler
 def handler(event, _):
     print(event)
     # data2 = get_table_data('sample_table2')
