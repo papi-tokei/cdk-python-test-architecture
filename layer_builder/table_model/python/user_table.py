@@ -3,15 +3,31 @@ from typing import Any
 import boto3
 from boto3.dynamodb.conditions import Key
 import uuid
+import os
 
-
-TABLE_NAME = 'sample_table1'
+TABLE_NAME = os.getenv('SAMPLE_TABLE_NAME', 'sample_table1_test')
 DYNAMODB = boto3.resource('dynamodb')
 
 
 @dataclasses.dataclass
 class UserTable:
     table: Any = DYNAMODB.Table(TABLE_NAME)
+
+    @classmethod
+    def create_table(cls, mock_dynamodb) -> None:
+        mock_dynamodb.create_table(
+            TableName=TABLE_NAME,
+            KeySchema=[
+                {'AttributeName': "id", "KeyType": "HASH"},
+            ],
+            AttributeDefinitions=[
+                {'AttributeName': 'id', 'AttributeType': 'S'},
+            ],
+            ProvisionedThroughput={
+                "ReadCapacityUnits": 5,
+                "WriteCapacityUnits": 5,
+            },
+        )
 
     @classmethod
     def create_user(cls, user_name: str, user_age: int) -> None:
@@ -27,6 +43,12 @@ class UserTable:
     @classmethod
     def scan_user_data(cls) -> Any:
         return cls.table.scan()['Items']
+
+    @classmethod
+    def create_dummy_data(cls, dummy_data_list: list) -> Any:
+        with cls.table.batch_writer() as batch:
+            for item in dummy_data_list:
+                batch.put_item(Item=item)
 
 
 def print_ok():
